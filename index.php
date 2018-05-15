@@ -69,10 +69,6 @@ $app->get("/delete-producto/:id",function($id) use($app, $db){
     $sql = 'DELETE FROM productos WHERE id= '.$id;
     $query=$db->query($sql);
  
-    
-    
- 
-
     if($query){    
      
      $result = array(
@@ -95,7 +91,37 @@ $app->get("/delete-producto/:id",function($id) use($app, $db){
 
 
 //Actualizar producto
+$app->post("/update-producto/:id",function($id) use($app, $db){
+  $json =$app->request->post('json');
+  $data= json_decode($json,true);
 
+  $sql = "UPDATE productos set ".
+         "nombre = '{$data["nombre"]}',".
+         "descripcion ='{$data["descripcion"]}', ".
+         "precio = '{$data["precio"]}', ".
+         "imagen = '{$data["imagen"]}' ".
+         "WHERE id = {$id};";
+
+    $query= $db->query($sql);
+    
+
+    if ($query) {
+        $result = array(
+            "status" => 'success',
+            "code" => 200,
+            "message" => 'El producto se actualizo correctamente'
+          );
+    }
+    else {
+        $result = array(
+            "status" => 'error',
+            "code" => 404,
+            "message" => 'El producto no se actualizo correctamente'
+          );
+    }
+
+    echo json_encode($result);
+});
 
 //Subir imagen
 
