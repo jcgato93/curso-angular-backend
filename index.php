@@ -98,9 +98,13 @@ $app->post("/update-producto/:id",function($id) use($app, $db){
   $sql = "UPDATE productos set ".
          "nombre = '{$data["nombre"]}',".
          "descripcion ='{$data["descripcion"]}', ".
-         "precio = '{$data["precio"]}', ".
-         "imagen = '{$data["imagen"]}' ".
-         "WHERE id = {$id};";
+         "precio = '{$data["precio"]}', ";
+
+         if(isset($data['imagen'])){
+             $sql .="imagen = '{$data["imagen"]}' ";
+         }
+         
+       $sql .=" WHERE id = {$id};";
 
     $query= $db->query($sql);
     
@@ -124,7 +128,41 @@ $app->post("/update-producto/:id",function($id) use($app, $db){
 });
 
 //Subir imagen
+$app->post('/upload-file',function() use($db, $app){
+    $result= array(
+        'status' => 'error',
+        'code' => 404,
+        'message' => 'El archivo no pudo se cargado'
+    );
+     
+    if(isset($_FILES['uploads'])){
+        $piramideUploader= new PiramideUploader();
 
+        $upload= $piramideUploader->upload('image',"uploads","uploads",array('image/jpeg','image/png','image/gif'));
+
+        $file= $piramideUploader->getInfoFile();
+        $file_name = $file['complete_name'];
+
+        if(isset($upload) && $upload["uploaded"] == false){
+            $result= array(
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'El archivo no pudo se cargado'
+            );
+        }else {
+            $result= array(
+                'status' => 'success',
+                'code' => 200,
+                'message' => 'El archivo se cargo',
+                'filename' => $file_name
+            );
+        }
+       
+
+    }
+        echo json_encode($result);
+    
+});
 
 
 //Guardar productos
