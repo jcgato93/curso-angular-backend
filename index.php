@@ -14,6 +14,7 @@ $app->get("/pruebas",function() use($app, $db){
     var_dump($db);
 });
 
+
 //Listar todos los productos 
 $app->get("/productos",function() use($app, $db){
    
@@ -38,6 +39,30 @@ $app->get("/productos",function() use($app, $db){
 
 
 //Devolver un producto
+$app->get("/productos/:id",function($id) use($app, $db){
+   $sql = 'SELECT * FROM productos WHERE id= '.$id;
+   $query=$db->query($sql);
+
+   
+    $result = array(
+      "status" => 'error',
+      "code" => 404,
+      "message" => 'Producto no disponible'
+    );
+
+   if($query->num_rows == 1){
+    $producto= $query->fetch_assoc();
+    
+    $result = array(
+        "status" => 'success',
+        "code" => 200,
+        "message" => $producto
+    );
+   }
+  
+   echo json_encode($result);
+
+});
 
 //Eliminar producto
 
