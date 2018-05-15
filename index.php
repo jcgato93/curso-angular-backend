@@ -14,6 +14,41 @@ $app->get("/pruebas",function() use($app, $db){
     var_dump($db);
 });
 
+//Listar todos los productos 
+$app->get("/productos",function() use($app, $db){
+   
+    $sql = "Select * From  productos  ORDER BY id Desc;";
+    $query= $db->query($sql);
+
+    $productos = array();
+
+    while ($producto = $query->fetch_assoc()) {
+        $productos[] = $producto;
+    }
+
+    $result= array(
+        'status' => 'success',
+        'code' => 200,
+        'data' => $productos
+    );
+
+    echo json_encode($result);
+});
+
+
+
+//Devolver un producto
+
+//Eliminar producto
+
+//Actualizar producto
+
+
+//Subir imagen
+
+
+
+//Guardar productos
 $app->post('/productos', function() use($app, $db){
     $json = $app->request->post('json');
     $data = json_decode($json,true);
