@@ -78,66 +78,63 @@ $app->get("/productos/:id",function($id) use($app, $db){
 });
 
 //Eliminar producto
-$app->get("/delete-producto/:id",function($id) use($app, $db){
-    $sql = 'DELETE FROM productos WHERE id= '.$id;
-    $query=$db->query($sql);
- 
-    if($query){    
-     
-     $result = array(
-         "status" => 'success',
-         "code" => 200,
-         "message" => 'El producto se elimino correctamente'
-     );
-    }else {
-        $result = array(
-            "status" => 'error',
-            "code" => 404,
-            "message" => 'Producto no se elimino'
-          );
-    }
-   
-    echo json_encode($result);
- 
- });
+$app->get('/delete-producto/:id', function($id) use($db, $app){
+	$sql = 'DELETE FROM productos WHERE id = '.$id;
+	$query = $db->query($sql);
+
+	if($query){
+		$result = array(
+			'status' 	=> 'success',
+			'code'		=> 200,
+			'message' 	=> 'El producto se ha eliminado correctamente!!'
+		);
+	}else{
+		$result = array(
+			'status' 	=> 'error',
+			'code'		=> 404,
+			'message' 	=> 'El producto no se ha eliminado!!'
+		);
+	}
+
+	echo json_encode($result);
+});
 
 
 
 //Actualizar producto
-$app->post("/update-producto/:id",function($id) use($app, $db){
-  $json =$app->request->post('json');
-  $data= json_decode($json,true);
+$app->post('/update-producto/:id', function($id) use($db, $app){
+	$json = $app->request->post('json');
+	$data = json_decode($json, true);
 
-  $sql = "UPDATE productos set ".
-         "nombre = '{$data["nombre"]}',".
-         "descripcion ='{$data["descripcion"]}', ".
-         "precio = '{$data["precio"]}', ";
+	$sql = "UPDATE productos SET ".
+		   "nombre = '{$data["nombre"]}', ".
+		   "descripcion = '{$data["descripcion"]}', ";
 
-         if(isset($data['imagen'])){
-             $sql .="imagen = '{$data["imagen"]}' ";
-         }
-         
-       $sql .=" WHERE id = {$id};";
+	if(isset($data['imagen'])){
+ 		$sql .= "imagen = '{$data["imagen"]}', ";
+	}
 
-    $query= $db->query($sql);
-    
+	$sql .=	"precio = '{$data["precio"]}' WHERE id = {$id}";
 
-    if ($query) {
-        $result = array(
-            "status" => 'success',
-            "code" => 200,
-            "message" => 'El producto se actualizo correctamente'
-          );
-    }
-    else {
-        $result = array(
-            "status" => 'error',
-            "code" => 404,
-            "message" => 'El producto no se actualizo correctamente'
-          );
-    }
 
-    echo json_encode($result);
+	$query = $db->query($sql);
+
+	if($query){
+		$result = array(
+			'status' 	=> 'success',
+			'code'		=> 200,
+			'message' 	=> 'El producto se ha actualizado correctamente!!'
+		);
+	}else{
+		$result = array(
+			'status' 	=> 'error',
+			'code'		=> 404,
+			'message' 	=> 'El producto no se ha actualizado!!'
+		);
+	}
+
+	echo json_encode($result);
+
 });
 
 //Subir imagen
